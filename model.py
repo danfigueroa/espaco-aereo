@@ -1,25 +1,36 @@
-from mesa import Agent, Model
+from mesa.model import Model
+from mesa.space import SingleGrid
 from mesa.time import RandomActivation
-from mesa.space import MultiGrid
-from mesa_geo import GeoSpace, GeoAgent, AgentCreator
-from mesa import Model
-import requests
-url = 'http://eric.clst.org/assets/wiki/uploads/Stuff/gz_2010_us_040_00_20m.json'
-r = requests.get(url)
-geojson_states = r.json()
+from mesa.datacollection import DataCollector
 
-class State(GeoAgent):
-    def __init__(self, unique_id, model, shape):
-        super().__init__(unique_id, model, shape)
+# Importando os agentes criados para o modelo
+from .aeronave import Aeronave
 
-class GeoModel(Model):
-    def __init__(self):
-        self.grid = GeoSpace()
-        
-        state_agent_kwargs = dict(model=self)
-        AC = AgentCreator(agent_class=State, agent_kwargs=state_agent_kwargs)
-        agents = AC.from_GeoJSON(GeoJSON=geojson_states, unique_id="NAME")
-        self.grid.add_agents(agents)
+class EspacoAereo(Model):
+
+    numeroAeroportos = 3
+    numeroAeronaves = 0
+    numeroAeronavesInvasoras = 0
+
+    def __init__(self, width=50, height=50, torus=True, num_bug=50, seed=42, strategy=None):
+        super().__init__(seed=seed)
+        self.number_of_bug = num_bug
+        if not(strategy in ["stick", "switch"]):
+            raise TypeError("'strategy' must be one of {stick, switch}")
+        self.strategy = strategy
+
+        self.grid = SingleGrid(width, height, torus)
+        self.schedule = RandomActivation(self)
+        data = {"Bean": lambda m: m.number_of_bean,
+                "Corn": lambda m: m.number_of_corn,
+                "Soy": lambda m: m.number_of_soy,
+                "Bug": lambda m: m.number_of_bug,
+                }
+        self.datacollector = DataCollector(data)
 
     def step(self):
         self.schedule.step()
+        self.datacollector.collect(self)
+
+        if not(self.grid.exists_empty_cells()):
+            self.running = False
