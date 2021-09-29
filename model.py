@@ -5,6 +5,7 @@ from mesa.datacollection import DataCollector
 import matplotlib.pyplot as plt
 # Importando os agentes criados para o modelo
 from aeronave import *
+from model import *
 
 
 def compute_gini(model):

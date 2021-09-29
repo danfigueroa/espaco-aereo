@@ -17,11 +17,7 @@ def agent_portrayal(agent):
         portrayal["r"] = 0.5
     return portrayal
 
-grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
-server = ModularServer(MoneyModel,
-                       [grid],
-                       "Money Model",
-                       {"N":10, "width":10, "height":10})
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 
 chart = ChartModule([{"Label": "Gráfico",
                       "Color": "Black"}],
@@ -30,7 +26,7 @@ chart = ChartModule([{"Label": "Gráfico",
 server = ModularServer(MoneyModel,
                        [grid, chart],
                        "Money Model",
-                       {"N":100, "width":50, "height":50})
+                       {"N":1, "width":10, "height":10})
 
 server.port = 8521 # The default
 server.launch()

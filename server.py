@@ -7,20 +7,14 @@ from mesa.visualization.modules import ChartModule
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
                  "Filled": "true",
-                 "r": 0.5,
-                 "Color": "blue"
+                 "r": 0.7,
+                 "Color": "blue",
+                 "Layer": "0"
                  }
 
-    if agent.pontoCego < 0.33:
-        portrayal["Color"] = "blue"
-        portrayal["Layer"] = 0
-    else:
-        portrayal["Color"] = "red"
-        portrayal["Layer"] = 1
-        portrayal["r"] = 0.5
     return portrayal
 
-grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
+grid = CanvasGrid(agent_portrayal, 50, 50, 800, 500)
 server = ModularServer(EspacoAereo,
                        [grid],
                        "Espaço Aéreo",

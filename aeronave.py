@@ -19,8 +19,7 @@ class Aeronave(Agent):
 
     # Função que define o comportamento da aeronave em cada step da simulação
     def step(self):
-        self.move
-        print("Moveu-se com sucesso para " + self.move.newPosition)
+        self.move()
 
     def deteccao(self, pontoCego):
         pontoCego = randint(0, 1)
