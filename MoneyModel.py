@@ -5,6 +5,7 @@ from mesa.datacollection import DataCollector
 import matplotlib.pyplot as plt
 import seaborn as sns
 from ipywidgets import interact, interact_manual
+from mesa.batchrunner import BatchRunner
 
 sns.set()
 
@@ -47,6 +48,7 @@ class MoneyModel(Model):
         self.num_agents = N
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
+        self.running = True
 
         # Create agents
         for i in range(self.num_agents):
@@ -58,8 +60,9 @@ class MoneyModel(Model):
             self.grid.place_agent(a, (x, y))
 
         self.datacollector = DataCollector(
-            model_reporters={"Gini": compute_gini},  # `compute_gini` defined above
-            agent_reporters={"Wealth": "wealth"})
+            model_reporters={"Gini": compute_gini},
+            agent_reporters={"Wealth": "wealth"}
+        )
 
     def step(self):
         self.datacollector.collect(self)

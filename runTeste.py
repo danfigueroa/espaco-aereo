@@ -1,20 +1,36 @@
 from MoneyModel import *
-import matplotlib.pyplot as plt
-import numpy as np
+from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.modules import ChartModule
 
-model = MoneyModel(50, 10, 10)
-for i in range(20):
-    model.step()
+def agent_portrayal(agent):
+    portrayal = {"Shape": "circle",
+                 "Filled": "true",
+                 "r": 0.5}
 
-agent_counts = np.zeros((model.grid.width, model.grid.height))
-for cell in model.grid.coord_iter():
-    cell_content, x, y = cell
-    agent_count = len(cell_content)
-    agent_counts[x][y] = agent_count
-plt.imshow(agent_counts, interpolation='nearest')
-plt.colorbar()
+    if agent.wealth > 0:
+        portrayal["Color"] = "blue"
+        portrayal["Layer"] = 0
+    else:
+        portrayal["Color"] = "red"
+        portrayal["Layer"] = 1
+        portrayal["r"] = 0.5
+    return portrayal
 
-# If running from a text editor or IDE, remember you'll need the following:
-# plt.show()
+grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
+server = ModularServer(MoneyModel,
+                       [grid],
+                       "Money Model",
+                       {"N":10, "width":10, "height":10})
 
-plt.show()
+chart = ChartModule([{"Label": "Gráfico",
+                      "Color": "Black"}],
+                    data_collector_name='datacollector')
+
+server = ModularServer(MoneyModel,
+                       [grid, chart],
+                       "Money Model",
+                       {"N":100, "width":50, "height":50})
+
+server.port = 8521 # The default
+server.launch()
