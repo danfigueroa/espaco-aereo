@@ -1,36 +1,43 @@
 from mesa.model import Model
-from mesa.space import SingleGrid
+from mesa.space import MultiGrid
 from mesa.time import RandomActivation
 from mesa.datacollection import DataCollector
-
+import matplotlib.pyplot as plt
 # Importando os agentes criados para o modelo
-from .aeronave import Aeronave
+from aeronave import *
+
+
+def compute_gini(model):
+    agent_wealths = [agent.pontoCego for agent in model.schedule.agents]
+    x = sorted(agent_wealths)
+    N = model.num_agents
+    B = sum( xi * (N-i) for i,xi in enumerate(x) ) / (N*sum(x))
+    return (1 + (1/N) - 2*B)
+
 
 class EspacoAereo(Model):
 
-    numeroAeroportos = 3
-    numeroAeronaves = 0
-    numeroAeronavesInvasoras = 0
-
-    def __init__(self, width=50, height=50, torus=True, num_bug=50, seed=42, strategy=None):
-        super().__init__(seed=seed)
-        self.number_of_bug = num_bug
-        if not(strategy in ["stick", "switch"]):
-            raise TypeError("'strategy' must be one of {stick, switch}")
-        self.strategy = strategy
-
-        self.grid = SingleGrid(width, height, torus)
+    """Modelo de simulação de detecção de aeronaves invasoras."""
+    def __init__(self, N, width, height):
+        self.num_agents = N
+        self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
-        data = {"Bean": lambda m: m.number_of_bean,
-                "Corn": lambda m: m.number_of_corn,
-                "Soy": lambda m: m.number_of_soy,
-                "Bug": lambda m: m.number_of_bug,
-                }
-        self.datacollector = DataCollector(data)
+        self.running = True
+
+        # Create agents
+        for i in range(self.num_agents):
+            a = Aeronave(i, self, EspacoAereo)
+            self.schedule.add(a)
+            # Add the agent to a random grid cell
+            x = self.random.randrange(self.grid.width)
+            y = self.random.randrange(self.grid.height)
+            self.grid.place_agent(a, (x, y))
+
+        self.datacollector = DataCollector(
+            model_reporters={"Gini": compute_gini},
+            agent_reporters={"Detecção": "pontoCego"}
+        )
 
     def step(self):
-        self.schedule.step()
         self.datacollector.collect(self)
-
-        if not(self.grid.exists_empty_cells()):
-            self.running = False
+        self.schedule.step()
