@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 from aeronave import *
 from model import *
 
-
 def compute_gini(model):
     agent_wealths = [agent.pontoCego for agent in model.schedule.agents]
     x = sorted(agent_wealths)
@@ -27,12 +26,12 @@ class EspacoAereo(Model):
 
         # Create agents
         for i in range(self.num_agents):
-            a = Aeronave(i, self, EspacoAereo)
+            a = Aeronave(i, self, EspacoAereo) 
             self.schedule.add(a)
             # Add the agent to a random grid cell
             x = self.random.randrange(self.grid.width)
             y = self.random.randrange(self.grid.height)
-            self.grid.place_agent(a, (x, y))
+            self.grid.place_agent(a, (0, 0))
 
         self.datacollector = DataCollector(
             model_reporters={"Gini": compute_gini},
