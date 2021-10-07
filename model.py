@@ -7,7 +7,7 @@ from mesa.batchrunner import BatchRunner
 from coordenadas import alterarPosicao
 
 # Definindo variáveis globais
-posicaoAtual = (10, 1)
+posicaoAtual = (10, 0)
 
 def compute_gini(model):
     agent_positions = [agent.position for agent in model.schedule.agents]
