@@ -1,19 +1,42 @@
-from mesa.model import Model
-from mesa.space import MultiGrid
+from mesa import Model, Agent
 from mesa.time import RandomActivation
+from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
-import matplotlib.pyplot as plt
-# Importando os agentes criados para o modelo
-from aeronave import *
-from model import *
+from mesa.batchrunner import BatchRunner
+
+from coordenadas import alterarPosicao
+
+# Definindo variáveis globais
+posicaoAtual = (10, 1)
 
 def compute_gini(model):
-    agent_wealths = [agent.pontoCego for agent in model.schedule.agents]
-    x = sorted(agent_wealths)
+    agent_positions = [agent.position for agent in model.schedule.agents]
+    x = sorted(agent_positions)
     N = model.num_agents
-    B = sum( xi * (N-i) for i,xi in enumerate(x) ) / (N*sum(x))
-    return (1 + (1/N) - 2*B)
+    B = 10
+    return (N * B)
 
+class Aeronave(Agent):
+    
+    def __init__(self, id, model):
+        super().__init__(id, model)
+        self.position = (5,5)
+        self.pontoCego = 0.33
+
+    #Função que controla as coordenadas da movimentação
+    def alterarPosicao(changePosition, change):
+        return (changePosition[0] + change[0]), (changePosition[1] + change[1])
+
+    # Função que controla o movimento da aeronave no grid
+    def move(self):
+        global posicaoAtual
+        posicaoAtual = alterarPosicao(posicaoAtual, [0,1])
+        #y = y+1   
+        self.model.grid.move_agent(self, posicaoAtual)
+    
+    # Função que define o comportamento aeronave cada passo da simulação
+    def step(self):
+        self.move()
 
 class EspacoAereo(Model):
 
@@ -26,16 +49,16 @@ class EspacoAereo(Model):
 
         # Create agents
         for i in range(self.num_agents):
-            a = Aeronave(i, self, EspacoAereo) 
-            self.schedule.add(a)
-            # Add the agent to a random grid cell
-            x = self.random.randrange(self.grid.width)
-            y = self.random.randrange(self.grid.height)
-            self.grid.place_agent(a, (0, 0))
-
+            aeronave = Aeronave(i, self) 
+            self.schedule.add(aeronave)
+            #x = self.random.randrange(self.grid.width)
+            #y = 0
+            global posicaoAtual
+            self.grid.place_agent(aeronave, posicaoAtual)
+        
         self.datacollector = DataCollector(
             model_reporters={"Gini": compute_gini},
-            agent_reporters={"Detecção": "pontoCego"}
+            agent_reporters={"Position": "position"}
         )
 
     def step(self):

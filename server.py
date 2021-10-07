@@ -8,17 +8,19 @@ def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
                  "Filled": "true",
                  "r": 0.7,
-                 "Color": "blue",
-                 "Layer": "0"
+                 "Color": "green",
+                 "Layer": "1"
                  }
-
+                
     return portrayal
 
-grid = CanvasGrid(agent_portrayal, 50, 50, 800, 500)
+# Definição de atributos do grid
+grid = CanvasGrid(agent_portrayal, 50, 50, 500, 500)
+
 server = ModularServer(EspacoAereo,
                        [grid],
                        "Espaço Aéreo",
-                       {"N":100, "width":50, "height":50})
+                       {"N":1, "width":50, "height":50})
 
 chart = ChartModule([{"Label": "Gráfico",
                       "Color": "Black"}],
