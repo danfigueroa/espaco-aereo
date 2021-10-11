@@ -2,6 +2,8 @@
 
 Simulação de sistema de detecção de aeronaves invasoras utilizando modelagem baseada em agentes construída em Python
 
+![Ant Simulation GIF](antsimulation.gif)
+
 ## Instalação 
 
 1. Clone o repositório:
