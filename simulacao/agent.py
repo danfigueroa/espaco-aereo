@@ -1,7 +1,7 @@
 from mesa import Agent
 from random import *
 
-posicaoAtual = (0,random.randrange(0,49)) 
+posicaoAtual = (0,20) #(0,random.randrange(0,49)) 
 
 #Função que controla as coordenadas da movimentação
 def alterarPosicao(changePosition, change):

@@ -2,32 +2,31 @@ from mesa import Model
 from mesa.time import RandomActivation
 from mesa.space import MultiGrid
 from mesa.datacollection import DataCollector
-import random
-
-from .agent import Aeronave, Radar
+from random import *
+from .agent import *
 
 # Definindo variáveis globais
-posicaoAtual = (0,random.randrange(0,49)) 
+posicaoAtual = (0,20) #(0,random.randrange(0,49)) 
 
 #Função que controla as coordenadas da movimentação
 def alterarPosicao(changePosition, change):
     return (changePosition[0] + change[0]), (changePosition[1] + change[1])
 
 def compute_gini(model):
-    detectada = random.uniform(0,1)
+    #detectada = random.uniform(0,1)
 
     agent_positions = [agent.position for agent in model.schedule.agents]
     x = sorted(agent_positions)
-    N = model.num_agents
+    numeroAgentes = model.num_agents
     B = 10
-    return (detectada)
+    return (numeroAgentes*B)
 
 # Definição do modelo da simulação
 class EspacoAereo(Model):
 
     """Modelo de simulação de detecção de aeronaves invasoras."""
-    def __init__(self, N, width, height):
-        self.num_agents = N
+    def __init__(self, numeroAgentes, width, height):
+        self.num_agents = numeroAgentes
         self.grid = MultiGrid(width, height, True)
         self.schedule = RandomActivation(self)
         self.running = True
@@ -40,10 +39,10 @@ class EspacoAereo(Model):
             #posicaoAtual = (0, random.randint(0, 49))
             self.grid.place_agent(aeronave, posicaoAtual)
 
-        # Criando os agentes de radar
+        """# Criando os agentes de radar
         radar = Radar(i, self)
         self.schedule.add(radar)
-        self.grid.place_agent(radar, (20,20))
+        self.grid.place_agent(radar, (20,20))"""
         
         self.datacollector = DataCollector(
             model_reporters={"Gini": compute_gini},

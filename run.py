@@ -1,3 +1,3 @@
-from aeronaves.server import server
+from simulacao.server import server
 
 server.launch()
