@@ -1,7 +1,7 @@
 from mesa import Agent
 from random import *
 
-posicaoAtual = (0,20) #(0,random.randrange(0,49)) 
+posicaoAtual = (20,20) #(0,random.randrange(0,49)) 
 
 #Função que controla as coordenadas da movimentação
 def alterarPosicao(changePosition, change):
@@ -27,7 +27,7 @@ class Aeronave(Agent):
 
 # Definição do agente que representa um radar
 class Radar(Agent):
-    def __init__(self, id, model):
+    def __init__(self, model):
         super().__init__(id, model)
 
     def deteccao(self):
