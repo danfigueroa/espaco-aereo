@@ -21,7 +21,7 @@ model_params = {
     #"numeroAeronaves": 1,
     "height": 50,
     "width": 50,
-    "numeroAeronaves": UserSettableParameter("slider", "numeroAeronaves", 1, 1, 20, 1),
+    "numeroAeronaves": UserSettableParameter("slider", "Número de aeronaves", 1, 1, 20, 1),
     #"diffusion": UserSettableParameter("slider", "Diffusion Rate", 1.0, 0.0, 1.0, 0.1),
     #"initdrop": UserSettableParameter("slider", "Initial Drop", 100, 100, 1000, 50),
     #"prob_random": UserSettableParameter("slider", "Random Move Probability", 0.1, 0.0, 1.0, 0.1),
@@ -38,9 +38,7 @@ chart = ChartModule([{"Label": "Naves fora do radar",
 server = ModularServer(EspacoAereo,
                        [grid, chart],
                        "Espaço Aéreo",
-                       model_params
-                       #{"numeroAeronaves":1, "width":50, "height":50}
-                       )
+                       model_params)
 
 server.port = 8521 # The default
 server.launch()
